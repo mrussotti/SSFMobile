@@ -1,20 +1,71 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import Training from './Training';
+import Recovery from './Recovery';
+import Settings from './Settings';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const MainTabs = () => (
+  <Tab.Navigator
+    initialRouteName="Training"
+    screenOptions={{
+      tabBarActiveTintColor: 'blue',
+      tabBarInactiveTintColor: 'gray',
+    }}
+  >
+    <Tab.Screen
+      name="Training"
+      component={Training}
+      options={({ navigation }) => ({
+        headerTitle: 'Training',
+        headerRight: () => (
+          <Ionicons
+            name="settings"
+            size={25}
+            color="black"
+            style={{ marginRight: 15 }}
+            onPress={() => navigation.navigate('Settings')}
+          />
+        ),
+      })}
+    />
+    <Tab.Screen
+      name="Recovery"
+      component={Recovery}
+      options={({ navigation }) => ({
+        headerTitle: 'Recovery',
+        headerRight: () => (
+          <Ionicons
+            name="settings"
+            size={25}
+            color="black"
+            style={{ marginRight: 15 }}
+            onPress={() => navigation.navigate('Settings')}
+          />
+        ),
+      })}
+    />
+  </Tab.Navigator>
+);
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Go Back"
+          component={MainTabs}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Settings" component={Settings} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;

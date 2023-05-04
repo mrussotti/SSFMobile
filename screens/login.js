@@ -3,16 +3,19 @@ import React, {useState, useEffect} from 'react';
 import { TextInput } from 'react-native';
 import { StyleSheet, View, Text, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import {auth} from '../firebase';
+import { useNavigation } from '@react-navigation/native';
+
 
 const Login = ({ navigation }) => {
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
+    const navigation2 = useNavigation();
 
 
     useEffect(() => {
        const unsubscribe = auth.onAuthStateChanged(user => {
             if (user){
-                navigation.navigate("Training")
+                navigation2.replace("Training")
             }
         })
         return unsubscribe

@@ -31,7 +31,7 @@ const App = () => {
         {user ? (
           <>
             <Stack.Screen
-              name="BottomTabs"
+              name="Back"
               component={BottomTabs}
               options={{ headerShown: false }}
             />

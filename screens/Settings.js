@@ -1,3 +1,4 @@
+//settings.js
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { View, Text, Button, StyleSheet } from 'react-native';

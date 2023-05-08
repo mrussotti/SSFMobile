@@ -1,24 +1,33 @@
+// BottomTabs.js
 import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Training from './screens/Training';
 import Recovery from './screens/Recovery';
+import CreateMacrocycleScreen from './screens/CreateMacrocycleScreen';
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
+const TrainingStack = createStackNavigator();
+const RecoveryStack = createStackNavigator();
 
-const BottomTabs = ({ navigation }) => {
+const TrainingStackNavigator = () => {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: 'blue',
-        tabBarInactiveTintColor: 'gray',
-      }}
-    >
-      <Tab.Screen
-        name="Training"
+    <TrainingStack.Navigator>
+      <TrainingStack.Screen
+        name="TrainingStack"
         component={Training}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: 'Training',
+          headerLeft: () => (
+            <Ionicons
+              name="add"
+              size={25}
+              color="black"
+              style={{ marginLeft: 15 }}
+              onPress={() => navigation.navigate('CreateMacrocycle')}
+            />
+          ),
           headerRight: () => (
             <Ionicons
               name="settings"
@@ -28,12 +37,24 @@ const BottomTabs = ({ navigation }) => {
               onPress={() => navigation.navigate('Settings')}
             />
           ),
-        }}
+        })}
       />
-      <Tab.Screen
-        name="Recovery"
+      <TrainingStack.Screen
+        name="CreateMacrocycle"
+        component={CreateMacrocycleScreen}
+        options={{ title: 'Create Macrocycle' }}
+      />
+    </TrainingStack.Navigator>
+  );
+};
+
+const RecoveryStackNavigator = () => {
+  return (
+    <RecoveryStack.Navigator>
+      <RecoveryStack.Screen
+        name="RecoveryStack"
         component={Recovery}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: 'Recovery',
           headerRight: () => (
             <Ionicons
@@ -44,7 +65,30 @@ const BottomTabs = ({ navigation }) => {
               onPress={() => navigation.navigate('Settings')}
             />
           ),
-        }}
+        })}
+      />
+    </RecoveryStack.Navigator>
+  );
+};
+
+const BottomTabs = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: 'blue',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="Training"
+        component={TrainingStackNavigator}
+        options={{ tabBarLabel: 'Training' }}
+      />
+      <Tab.Screen
+        name="Recovery"
+        component={RecoveryStackNavigator}
+        options={{ tabBarLabel: 'Recovery' }}
       />
     </Tab.Navigator>
   );

@@ -39,7 +39,7 @@ const Training = ({ navigation }) => {
       <TouchableOpacity
         style={styles.listItem}
         onPress={() => {
-          // Navigate to Macrocycle screen
+          navigation.navigate('DisplayMacrocycle', { macrocycleId: item.id });
         }}
       >
         <Text>{item.name}</Text>

@@ -1,10 +1,10 @@
-// BottomTabs.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Training from './screens/Training';
 import Recovery from './screens/Recovery';
 import CreateMacrocycleScreen from './screens/CreateMacrocycleScreen';
+import DisplayMacrocycle from './screens/DisplayMacrocycle'; // Add this line
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -43,6 +43,11 @@ const TrainingStackNavigator = () => {
         name="CreateMacrocycle"
         component={CreateMacrocycleScreen}
         options={{ title: 'Create Macrocycle' }}
+      />
+      <TrainingStack.Screen // Add this block
+        name="DisplayMacrocycle"
+        component={DisplayMacrocycle}
+        options={{ title: 'Display Macrocycle' }}
       />
     </TrainingStack.Navigator>
   );

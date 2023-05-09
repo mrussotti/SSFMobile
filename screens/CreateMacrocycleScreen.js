@@ -8,7 +8,6 @@ const CreateMacrocycleScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [mesocycles, setMesocycles] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const createMacrocycle = async () => {
@@ -22,23 +21,14 @@ const CreateMacrocycleScreen = ({ navigation }) => {
       return;
     }
 
-    if (mesocycles.trim() === '' || isNaN(mesocycles) || Number(mesocycles) < 1) {
-      setErrorMessage('Please enter a valid number of mesocycles.');
-      return;
-    }
-
     try {
       const userId = auth.currentUser.uid;
-      const macrocycleRef = await firebase
+      await firebase
         .firestore()
         .collection('users')
         .doc(userId)
         .collection('macrocycles')
-        .add({ name, startDate, endDate, mesocycles: Number(mesocycles) });
-
-      for (let i = 1; i <= mesocycles; i++) {
-        await macrocycleRef.collection('mesocycles').add({ number: i });
-      }
+        .add({ name, startDate, endDate });
 
       navigation.goBack();
     } catch (error) {
@@ -70,14 +60,6 @@ const CreateMacrocycleScreen = ({ navigation }) => {
         onChangeText={setEndDate}
         placeholder="Enter end date (YYYY-MM-DD)"
       />
-      <Text style={styles.label}>Number of Mesocycles</Text>
-      <TextInput
-        style={styles.input}
-        value={mesocycles}
-        onChangeText={setMesocycles}
-        keyboardType="number-pad"
-        placeholder="Enter number of mesocycles"
-      />
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
       <Button title="Create Macrocycle" onPress={createMacrocycle} />
     </View>
@@ -99,11 +81,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    marginBottom: 15},
-    error: {
+    marginBottom: 15,
+  },
+  error: {
     color: 'red',
     marginBottom: 15,
-    },
-    });
-    
-    export default CreateMacrocycleScreen;
+  },
+});
+
+export default CreateMacrocycleScreen;

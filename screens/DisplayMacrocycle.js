@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { auth } from '../firebase';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import Mesocycle from '../components/Mesocycle.js';
 
-const DisplayMacrocycle = ({ route }) => {
-  const { macrocycleId } = route.params;
+const DisplayMacrocycle = ({ route, navigation }) => {
+    const { macrocycleId } = route.params;
   const [macrocycle, setMacrocycle] = useState(null);
   const [mesocycles, setMesocycles] = useState([]);
 
@@ -57,16 +58,18 @@ const DisplayMacrocycle = ({ route }) => {
       )}
       <Text style={{ fontSize: 24, marginTop: 20 }}>Mesocycles:</Text>
       <FlatList
-        data={mesocycles}
-        renderItem={({ item }) => (
-          <View>
-            <Text>
-              Mesocycle {item.number}: {item.name || 'Unnamed'}
-            </Text>
-          </View>
-        )}
-        keyExtractor={(item) => item.id}
-      />
+  data={mesocycles}
+  renderItem={({ item }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('DisplayMesocycle', { mesocycleId: item.id })
+      }
+    >
+      <Mesocycle key={item.id} name={item.name || 'Unnamed'} />
+    </TouchableOpacity>
+  )}
+  keyExtractor={(item) => item.id}
+/>
     </View>
   );
 };

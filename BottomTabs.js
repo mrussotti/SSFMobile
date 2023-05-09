@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Training from './screens/Training';
 import Recovery from './screens/Recovery';
 import CreateMacrocycleScreen from './screens/CreateMacrocycleScreen';
-import DisplayMacrocycle from './screens/DisplayMacrocycle'; // Add this line
+import DisplayMacrocycle from './screens/DisplayMacrocycle';
+import DisplayMesocycle from './screens/DisplayMesocycle'; // Add this line
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -44,10 +45,15 @@ const TrainingStackNavigator = () => {
         component={CreateMacrocycleScreen}
         options={{ title: 'Create Macrocycle' }}
       />
-      <TrainingStack.Screen // Add this block
+      <TrainingStack.Screen
         name="DisplayMacrocycle"
         component={DisplayMacrocycle}
         options={{ title: 'Display Macrocycle' }}
+      />
+      <TrainingStack.Screen // Add this block
+        name="DisplayMesocycle"
+        component={DisplayMesocycle}
+        options={{ title: 'Display Mesocycle' }}
       />
     </TrainingStack.Navigator>
   );

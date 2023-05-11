@@ -1,14 +1,14 @@
-// components/Mesocycle.js
+// components/Day.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Microcycle from './Microcycle';
+import Exercise from './Exercise';
 
-const Mesocycle = ({ name, microcycles }) => {
+const Day = ({ name, exercises }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{name}</Text>
-      {microcycles.map((microcycle, index) => (
-        <Microcycle key={index} name={`Microcycle ${microcycle.number}: ${microcycle.name || 'Unnamed'}`} />
+      {exercises.map((exercise, index) => (
+        <Exercise key={index} name={exercise.name} />
       ))}
     </View>
   );
@@ -29,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Mesocycle;
+export default Day;

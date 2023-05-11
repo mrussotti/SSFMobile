@@ -1,15 +1,17 @@
+// screens/DisplayMacrocycle.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Button } from 'react-native';
 import { auth } from '../firebase';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import Mesocycle from '../components/Mesocycle';
 
 const DisplayMacrocycle = ({ route, navigation }) => {
     const { macrocycleId } = route.params;
     const [macrocycle, setMacrocycle] = useState(null);
     const [mesocycles, setMesocycles] = useState([]);
-    const [numMesocycles, setNumMesocycles] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [showNewMesocycleInput, setShowNewMesocycleInput] = useState(false);
+    const [newMesocycleName, setNewMesocycleName] = useState('');
 
     useEffect(() => {
         const userId = auth.currentUser.uid;
@@ -48,21 +50,30 @@ const DisplayMacrocycle = ({ route, navigation }) => {
         };
     }, [macrocycleId]);
 
-    const addMesocycles = async () => {
-        if (numMesocycles.trim() === '' || isNaN(numMesocycles) || Number(numMesocycles) < 1) {
-            setErrorMessage('Please enter a valid number of mesocycles.');
+    const addNewMesocycle = async () => {
+        if (newMesocycleName.trim() === '') {
             return;
         }
 
-        const macrocycleRef = firebase.firestore().collection('users').doc(auth.currentUser.uid).collection('macrocycles').doc(macrocycleId);
-
         try {
-            for (let i = 1; i <= numMesocycles; i++) {
-                await macrocycleRef.collection('mesocycles').add({ number: i });
-            }
+            const userId = auth.currentUser.uid;
+            await firebase
+                .firestore()
+                .collection('users')
+                .doc(userId)
+                .collection('macrocycles')
+                .doc(macrocycleId)
+                .collection('mesocycles')
+                .add({
+                    name: newMesocycleName,
+                    number: mesocycles.length + 1,
+                    microcycles: [],
+                });
+
+            setNewMesocycleName('');
+            setShowNewMesocycleInput(false);
         } catch (error) {
-            console.log('Error adding mesocycles:', error);
-            setErrorMessage('Error adding mesocycles. Please try again.');
+            console.log('Error adding new mesocycle:', error);
         }
     };
 
@@ -76,25 +87,38 @@ const DisplayMacrocycle = ({ route, navigation }) => {
                 </View>
             )}
             <Text style={{ fontSize: 24, marginTop: 20 }}>Mesocycles:</Text>
-      <FlatList
-        data={mesocycles}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('DisplayMesocycle', { mesocycleId: item.id })
-            }
-          >
-            <View>
-              <Text>
-                Mesocycle {item.number}: {item.name || 'Unnamed'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
-  );
+            <FlatList
+                data={mesocycles}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate('DisplayMesocycle', { mesocycleId: item.id, macrocycleId: macrocycleId })
+                        }
+                    >
+                        <Mesocycle
+                            name={`Mesocycle ${item.number}: ${item.name || 'Unnamed'}`}
+                            microcycles={item.microcycles || []}
+                        />
+                    </TouchableOpacity>
+                )}
+                keyExtractor={(item) => item.id}
+            />
+            {showNewMesocycleInput ? (
+                <View>
+                    <TextInput
+                        style={styles.input}
+                        value={newMesocycleName}
+                        onChangeText={setNewMesocycleName}
+                        placeholder="Enter new mesocycle name"
+                    />
+                    <Button title="Add New Mesocycle" onPress={addNewMesocycle} />
+                    <Button title="Cancel" onPress={() => setShowNewMesocycleInput(false)} />
+                </View>
+            ) : (
+                <Button title="Add New Mesocycle" onPress={() => setShowNewMesocycleInput(true)} />
+            )}
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -121,3 +145,4 @@ const styles = StyleSheet.create({
 });
 
 export default DisplayMacrocycle;
+

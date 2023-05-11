@@ -1,3 +1,4 @@
+//screens/Training.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -10,6 +11,8 @@ import {
 import { auth } from '../firebase';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+import Macrocycle from '../components/Macrocycle';
+
 
 const Training = ({ navigation }) => {
   const [macrocycles, setMacroCycles] = useState([]);
@@ -42,7 +45,10 @@ const Training = ({ navigation }) => {
           navigation.navigate('DisplayMacrocycle', { macrocycleId: item.id });
         }}
       >
-        <Text>{item.name}</Text>
+        <Macrocycle
+          name={item.name}
+          mesocycles={item.mesocycles || []}
+        />
       </TouchableOpacity>
     );
   };

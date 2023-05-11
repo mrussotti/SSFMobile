@@ -1,15 +1,11 @@
-// components/Mesocycle.js
+// components/Exercise.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Microcycle from './Microcycle';
 
-const Mesocycle = ({ name, microcycles }) => {
+const Exercise = ({ name }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{name}</Text>
-      {microcycles.map((microcycle, index) => (
-        <Microcycle key={index} name={`Microcycle ${microcycle.number}: ${microcycle.name || 'Unnamed'}`} />
-      ))}
     </View>
   );
 };
@@ -29,4 +25,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Mesocycle;
+export default Exercise;

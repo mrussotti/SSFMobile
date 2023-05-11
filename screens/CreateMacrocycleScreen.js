@@ -1,8 +1,10 @@
+//screens/CreateMacrocycleScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { auth } from '../firebase';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+
 
 const CreateMacrocycleScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -15,12 +17,12 @@ const CreateMacrocycleScreen = ({ navigation }) => {
       setErrorMessage('Please enter a name for the macrocycle.');
       return;
     }
-
+  
     if (startDate.trim() === '' || endDate.trim() === '') {
       setErrorMessage('Please enter start and end dates for the macrocycle.');
       return;
     }
-
+  
     try {
       const userId = auth.currentUser.uid;
       await firebase
@@ -28,14 +30,15 @@ const CreateMacrocycleScreen = ({ navigation }) => {
         .collection('users')
         .doc(userId)
         .collection('macrocycles')
-        .add({ name, startDate, endDate });
-
+        .add({ name, startDate, endDate, mesocycles: [] });
+  
       navigation.goBack();
     } catch (error) {
       console.log('Error creating macrocycle:', error);
       setErrorMessage('Error creating macrocycle. Please try again.');
     }
   };
+  
 
   return (
     <View style={styles.container}>

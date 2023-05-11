@@ -8,7 +8,7 @@ const Macrocycle = ({ name, mesocycles }) => {
     <View style={styles.container}>
       <Text style={styles.title}>{name}</Text>
       {mesocycles.map((mesocycle, index) => (
-        <Mesocycle key={index} name={mesocycle.name} />
+        <Mesocycle key={index} name={mesocycle.name} microcycles={mesocycle.microcycles} />
       ))}
     </View>
   );

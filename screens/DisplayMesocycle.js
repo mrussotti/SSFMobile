@@ -1,3 +1,4 @@
+// DisplayMesocycle.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Button } from 'react-native';
 import { auth } from '../firebase';
@@ -20,14 +21,27 @@ const DisplayMesocycle = ({ route, navigation }) => {
         .collection('users')
         .doc(userId)
         .collection('macrocycles')
-        .doc(macrocycleId) // you might need to pass this from DisplayMacrocycle
+        .doc(macrocycleId)
         .collection('mesocycles')
         .doc(mesocycleId)
         .get();
 
       const mesocycleData = mesocycleDoc.data();
       setMesocycle(mesocycleData);
-      setMicrocycles(mesocycleData.microcycles || []);
+
+      const microcyclesCollection = await firebase
+        .firestore()
+        .collection('users')
+        .doc(userId)
+        .collection('macrocycles')
+        .doc(macrocycleId)
+        .collection('mesocycles')
+        .doc(mesocycleId)
+        .collection('microcycles')
+        .get();
+
+      const microcyclesData = microcyclesCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setMicrocycles(microcyclesData);
     };
 
     fetchMesocycle();
@@ -37,50 +51,50 @@ const DisplayMesocycle = ({ route, navigation }) => {
     if (newMicrocycleName.trim() === '') {
       return;
     }
-  
+
     const userId = auth.currentUser.uid;
     const newMicrocycleNumber = microcycles.length + 1;
-  
+
     try {
       await firebase
         .firestore()
         .collection('users')
         .doc(userId)
         .collection('macrocycles')
-        .doc(macrocycleId) // you might need to pass this from DisplayMacrocycle
+        .doc(macrocycleId)
         .collection('mesocycles')
         .doc(mesocycleId)
-        .update({
-          microcycles: firebase.firestore.FieldValue.arrayUnion({
-            name: newMicrocycleName,
-            number: newMicrocycleNumber,
-            Days: [],
-          }),
+        .collection('microcycles')
+        .add({
+          name: newMicrocycleName,
+          number: newMicrocycleNumber,
+          days: [],
         });
-  
-      // fetch the updated mesocycle
-      const mesocycleDoc = await firebase
+
+      // fetch the updated microcycles
+      const microcyclesCollection = await firebase
         .firestore()
         .collection('users')
         .doc(userId)
         .collection('macrocycles')
-        .doc(macrocycleId) // you might need to pass this from DisplayMacrocycle
+        .doc(macrocycleId)
         .collection('mesocycles')
         .doc(mesocycleId)
+        .collection('microcycles')
         .get();
-  
-      const mesocycleData = mesocycleDoc.data();
-  
+
+      const microcyclesData = microcyclesCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
       // update local state
-      setMicrocycles(mesocycleData.microcycles || []);
-      
+      setMicrocycles(microcyclesData);
+
       setNewMicrocycleName('');
       setShowNewMicrocycleInput(false);
     } catch (error) {
       console.log('Error adding new microcycle:', error);
     }
   };
-  
+
 
   return (
     <View style={styles.container}>
@@ -95,13 +109,10 @@ const DisplayMesocycle = ({ route, navigation }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('DisplayMicrocycle', { microcycleId: item.id })
+              navigation.navigate('DisplayMicrocycle', { macrocycleId: macrocycleId, mesocycleId: mesocycleId, microcycleId: item.id })
             }
           >
-            <Microcycle
-              name={`Microcycle ${item.number}: ${item.name || 'Unnamed'}`}
-              Days={item.Days || []} // Pass Days if it exists, or an empty array otherwise
-            />
+            <Microcycle name={`Microcycle ${item.number}: ${item.name || 'Unnamed'}`} days={item.days || []} />
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -115,7 +126,7 @@ const DisplayMesocycle = ({ route, navigation }) => {
             placeholder="Enter new microcycle name"
           />
           <Button title="Add New Microcycle" onPress={addNewMicrocycle} />
-          <Button          title="Cancel" onPress={() => setShowNewMicrocycleInput(false)} />
+          <Button title="Cancel" onPress={() => setShowNewMicrocycleInput(false)} />
         </View>
       ) : (
         <Button title="Add New Microcycle" onPress={() => setShowNewMicrocycleInput(true)} />

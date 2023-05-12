@@ -7,6 +7,9 @@ import CreateMacrocycleScreen from './screens/CreateMacrocycleScreen';
 import DisplayMacrocycle from './screens/DisplayMacrocycle';
 import DisplayMesocycle from './screens/DisplayMesocycle'; // Add this line
 import { Ionicons } from '@expo/vector-icons';
+import DisplayMicrocycle from './screens/DisplayMicrocycle';
+import DisplayDay from './screens/DisplayDay';
+
 
 const Tab = createBottomTabNavigator();
 const TrainingStack = createStackNavigator();
@@ -50,14 +53,25 @@ const TrainingStackNavigator = () => {
         component={DisplayMacrocycle}
         options={{ title: 'Display Macrocycle' }}
       />
-      <TrainingStack.Screen // Add this block
+      <TrainingStack.Screen
         name="DisplayMesocycle"
         component={DisplayMesocycle}
         options={{ title: 'Display Mesocycle' }}
       />
+      <TrainingStack.Screen // Add this block
+        name="DisplayMicrocycle"
+        component={DisplayMicrocycle}
+        options={{ title: 'Display Microcycle' }}
+      />
+      <TrainingStack.Screen // Add this block
+        name="DisplayDay"
+        component={DisplayDay}
+        options={{ title: 'Display Day' }}
+      />
     </TrainingStack.Navigator>
   );
 };
+
 
 const RecoveryStackNavigator = () => {
   return (

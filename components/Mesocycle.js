@@ -14,6 +14,10 @@ const Mesocycle = ({ name, microcycles }) => {
   );
 };
 
+Mesocycle.defaultProps = {
+  microcycles: [],
+};
+
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,

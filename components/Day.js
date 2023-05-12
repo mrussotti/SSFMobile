@@ -14,6 +14,10 @@ const Day = ({ name, exercises }) => {
   );
 };
 
+Day.defaultProps = {
+  exercises: [],
+};
+
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,

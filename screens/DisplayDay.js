@@ -5,6 +5,8 @@ import { auth } from '../firebase';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import Exercise from '../components/Exercise';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const DisplayDay = ({ route, navigation }) => {
   const { macrocycleId, mesocycleId, microcycleId, dayId } = route.params;
@@ -14,11 +16,10 @@ const DisplayDay = ({ route, navigation }) => {
   const [showNewExerciseInput, setShowNewExerciseInput] = useState(false);
 
 
-  
-
-  useEffect(() => {
-    const fetchDay = async () => {
-      const userId = auth.currentUser.uid;
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchDay = async () => {
+        const userId = auth.currentUser.uid;
       const dayDoc = await firebase
         .firestore()
         .collection('users')
@@ -51,10 +52,51 @@ const DisplayDay = ({ route, navigation }) => {
         .get();
 
       setExercises(exercisesCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-    };
+      };
 
-    fetchDay();
-  }, [macrocycleId, mesocycleId, microcycleId, dayId]);
+      fetchDay();
+    }, [macrocycleId, mesocycleId, microcycleId, dayId])
+  );
+
+//   useEffect(() => {
+//     const fetchDay = async () => {
+//       const userId = auth.currentUser.uid;
+//       const dayDoc = await firebase
+//         .firestore()
+//         .collection('users')
+//         .doc(userId)
+//         .collection('macrocycles')
+//         .doc(macrocycleId)
+//         .collection('mesocycles')
+//         .doc(mesocycleId)
+//         .collection('microcycles')
+//         .doc(microcycleId)
+//         .collection('days')
+//         .doc(dayId)
+//         .get();
+
+//       setDay(dayDoc.data());
+
+//       const exercisesCollection = await firebase
+//         .firestore()
+//         .collection('users')
+//         .doc(userId)
+//         .collection('macrocycles')
+//         .doc(macrocycleId)
+//         .collection('mesocycles')
+//         .doc(mesocycleId)
+//         .collection('microcycles')
+//         .doc(microcycleId)
+//         .collection('days')
+//         .doc(dayId)
+//         .collection('exercises')
+//         .get();
+
+//       setExercises(exercisesCollection.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+//     };
+
+//     fetchDay();
+//   }, [macrocycleId, mesocycleId, microcycleId, dayId]);
 
   const addNewExercise = async () => {
     if (newExerciseName.trim() === '') return;

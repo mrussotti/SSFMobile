@@ -7,8 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 
 
 const Login = ({ navigation }) => {
-    const [email,setEmail]=useState('')
-    const [password,setPassword]=useState('')
+    const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
     const navigation2 = useNavigation();
 
 
@@ -21,25 +22,46 @@ const Login = ({ navigation }) => {
         return unsubscribe
     }, [])
 
-    const handleSignUp = () => {
-        auth
-        .createUserWithEmailAndPassword(email, password)
-        .then (userCredentials => {
-            const user = userCredentials.user;
-            console.log("Registered in with:",user.email);
-        })
-        .catch(error => alert(error.message))
-    }
+    const saveUserData = async (userId) => {
+        try {
+          await db.collection('users').doc(userId).set({
+            macrocycles: [],
+          });
+        } catch (error) {
+          console.log('Error saving user data:', error);
+        }
+      };
 
-    const handleLogin = () => {
-        auth
-        .signInWithEmailAndPassword(email, password)
-        .then (userCredentials => {
-            const user = userCredentials.user;
-            console.log("Logged in with:", user.email);
-        })
-        .catch(error => alert(error.message))
-    }
+    const handleSignUp = async () => {
+        if (email.trim() === '' || password.trim() === '') {
+            setErrorMessage('Please enter your email and password.');
+            return;
+          }
+      
+          try {
+            const result = await auth.createUserWithEmailAndPassword(email, password);
+            await saveUserData(result.user.uid);
+            setErrorMessage('');
+          } catch (error) {
+            setErrorMessage('Error signing up. Please try again.');
+          }
+        };
+
+    
+
+    const handleLogin = async () => {
+        if (email.trim() === '' || password.trim() === '') {
+            setErrorMessage('Please enter your email and password.');
+            return;
+          }
+      
+          try {
+            await auth.signInWithEmailAndPassword(email, password);
+            setErrorMessage('');
+          } catch (error) {
+            setErrorMessage('Error signing in. Please try again.');
+          }
+        };
 
 
     return (

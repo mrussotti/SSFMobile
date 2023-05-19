@@ -9,6 +9,8 @@ import DisplayMesocycle from './screens/DisplayMesocycle'; // Add this line
 import { Ionicons } from '@expo/vector-icons';
 import DisplayMicrocycle from './screens/DisplayMicrocycle';
 import DisplayDay from './screens/DisplayDay';
+import DisplayExercise from './screens/DisplayExercise';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -67,6 +69,11 @@ const TrainingStackNavigator = () => {
         name="DisplayDay"
         component={DisplayDay}
         options={{ title: 'Display Day' }}
+      />
+      <TrainingStack.Screen // Add this block
+        name="DisplayExercise"
+        component={DisplayExercise}
+        options={{ title: 'Display Exercise' }}
       />
     </TrainingStack.Navigator>
   );

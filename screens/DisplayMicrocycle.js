@@ -116,18 +116,23 @@ const DisplayMicrocycle = ({ route, navigation }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('DisplayDay',
-                { macrocycleId, mesocycleId, microcycleId, dayNumber: item.number })
+              navigation.navigate('DisplayDay', {
+                macrocycleId,
+                mesocycleId,
+                microcycleId,
+                dayId: item.id,
+              })
             }
           >
             <Day
               name={`Day ${item.number}: ${item.name || 'Unnamed'}`}
-              exercises={item.exercises || []} // Pass exercises if it exists, or an empty array otherwise
+              exercises={item.exercises || []}
             />
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
+
       {showNewDayInput ? (
         <View>
           <TextInput
